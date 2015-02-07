@@ -1,7 +1,14 @@
 package edu.csupomona.cs480.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import edu.csupomona.cs480.App;
 import edu.csupomona.cs480.data.User;
 import edu.csupomona.cs480.data.provider.UserManager;
+import edu.csupomona.cs480.util.ResourceResolver;
 
 
 /**
@@ -146,5 +154,31 @@ public class WebController {
         modelAndView.addObject("users", listAllUsers());
         return modelAndView;
     }
+
+	/**
+	 * Download file, done 
+	 * 
+	 * file should be in the repository folder
+	 * 
+	 * @param fileName
+	 * @param response
+	 * @return 
+	 * @throws IOException
+	 */
+	
+	@RequestMapping(value = "/file/{fileName}/download", method = RequestMethod.GET)
+	public void getFile(@PathVariable("fileName") String fileName,
+			/*@PathVariable("UserId") String userId,*/ HttpServletResponse response) throws IOException {    
+		System.out.println(fileName);
+		File f = ResourceResolver.getUploadedFile(fileName);
+		System.out.println(f.getAbsolutePath() + " " + f.exists());
+		//1.GetthefileofyourphotobasedontheuserIdandphotoId
+		InputStream file = new FileInputStream(f);
+		//2.Returnthephotofileasanoutputstreamusingthecodebelow
+		IOUtils.copy(file,response.getOutputStream());
+		//response.setContentType("image/jpeg");
+		response.flushBuffer();
+	   
+	}
 
 }
