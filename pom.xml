@@ -56,6 +56,21 @@
             <scope>test</scope>
         </dependency>
         
+    <dependency>
+      <groupId>net.sourceforge.collections</groupId>
+      <artifactId>collections-generic</artifactId>
+      <version>4.01</version>
+      <scope>compile</scope>
+    </dependency>
+    
+    <dependency>
+	<groupId>org.apache.commons</groupId>
+	<artifactId>commons-math3</artifactId>
+	<version>3.2</version>
+</dependency>
+    
+        
+        
         <dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>

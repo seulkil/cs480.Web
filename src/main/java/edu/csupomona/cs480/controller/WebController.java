@@ -4,11 +4,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.DecompositionSolver;
+import org.apache.commons.math3.linear.LUDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -180,5 +189,34 @@ public class WebController {
 		response.flushBuffer();
 	   
 	}
+	
+	/**
+	 *  calculate Simple 
+	 *  linear algebra 
+	 *  find x and y value 
+	 *  x1 x + y1 = v1 
+	 *  x2 x + y2 = v2 
+	 *  
+	 */
+	@RequestMapping(value = "/math/{x1}/{y1}/{v1}/{x2}/{y2}/{v2}", method = RequestMethod.GET)
+	public String simpleMath(@PathVariable("x1") double x1, @PathVariable("y1") double y1,
+			@PathVariable("x2") double x2,@PathVariable("y2") double y2,@PathVariable("v1") double v1,
+			@PathVariable("v2") double v2){
+		String answer;
+		RealMatrix coefficients =
+			    new Array2DRowRealMatrix(new double[][] { { x1, y1 }, { x2,y2}},
+			                       false);
+			DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
+			          
+			RealVector constants = new ArrayRealVector(new double[] { v1,v2}, false);
+			RealVector solution = solver.solve(constants);
+			          
+		answer = "x : " + solution.getEntry(0) + "y : " + solution.getEntry(1);
+		return answer;
+	}
+
+
+	
+	
 
 }
